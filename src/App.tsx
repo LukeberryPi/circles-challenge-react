@@ -6,18 +6,46 @@ type Coordinates = {
   y: number;
 };
 
-function App() {
-  const [clickCoordinates, setClickCoordinates] = useState<Coordinates>({ x: 0, y: 0 });
+type CircleProps = {
+  center: Coordinates;
+  radius?: number;
+};
 
-  const registerCoordinates = (event: React.MouseEvent<HTMLDivElement>) => {
+function Circle({ center, radius = 50 }: CircleProps) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        width: radius + "px",
+        height: radius + "px",
+        background: "blue",
+        borderRadius: "50%",
+        transform: "translate(-50%, -50%)",
+        left: center.x + "px",
+        top: center.y + "px",
+      }}
+    ></div>
+  );
+}
+
+function App() {
+  const [coordinatesList, setCoordinatesList] = useState<Coordinates[]>([]);
+
+  const clickListener = (event: React.MouseEvent) => {
     const { clientX, clientY } = event;
-    setClickCoordinates({ x: clientX, y: clientY });
+    setCoordinatesList([...coordinatesList, { x: clientX, y: clientY }]);
   };
 
   return (
-    <div onClick={(e) => registerCoordinates(e)} className="wrapper">
-      <p>last X of click: {clickCoordinates.x}</p>
-      <p>last Y of click: {clickCoordinates.y}</p>
+    <div onClick={(e) => clickListener(e)} className="wrapper">
+      <div className="buttons">
+        <button className="actions">Undo</button>
+        <button className="actions">Redo</button>
+      </div>
+      {coordinatesList.length > 0 &&
+        coordinatesList.map((coordinate) => {
+          return <Circle center={coordinate} />;
+        })}
     </div>
   );
 }
