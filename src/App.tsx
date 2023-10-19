@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 type Coordinates = {
   x: number;
   y: number;
+};
+
+type PaintArea = {
+  width: number;
+  height: number;
 };
 
 type CircleProps = {
@@ -29,23 +34,49 @@ function Circle({ center, radius = 50 }: CircleProps) {
 }
 
 function App() {
+  const paintAreaRef = useRef<HTMLDivElement | null>(null);
   const [coordinatesList, setCoordinatesList] = useState<Coordinates[]>([]);
+  const [paintArea, setPaintArea] = useState<PaintArea>({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    if (paintAreaRef.current) {
+      const offsetWidth = paintAreaRef.current.offsetWidth;
+      const offsetHeight = paintAreaRef.current.offsetHeight;
+
+      setPaintArea({
+        width: offsetWidth,
+        height: offsetHeight,
+      });
+    }
+  }, [setPaintArea]);
 
   const clickListener = (event: React.MouseEvent) => {
-    const { clientX, clientY } = event;
-    setCoordinatesList([...coordinatesList, { x: clientX, y: clientY }]);
+    const { offsetX, offsetY } = event.nativeEvent;
+    const { width, height } = paintArea;
+    console.log("width", width);
+    console.log("height", height);
+    setCoordinatesList([...coordinatesList, { x: offsetX, y: offsetY }]);
   };
 
   return (
-    <div onClick={(e) => clickListener(e)} className="wrapper">
+    <div className="wrapper">
       <div className="buttons">
         <button className="actions">Undo</button>
         <button className="actions">Redo</button>
       </div>
-      {coordinatesList.length > 0 &&
-        coordinatesList.map((coordinate) => {
-          return <Circle center={coordinate} />;
-        })}
+      <div
+        ref={paintAreaRef}
+        onClick={(e) => clickListener(e)}
+        className="paint-area"
+      >
+        {coordinatesList.length > 0 &&
+          coordinatesList.map((coordinate) => {
+            return <Circle center={coordinate} />;
+          })}
+      </div>
     </div>
   );
 }
