@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 
 type Coordinates = {
@@ -6,10 +6,10 @@ type Coordinates = {
   y: number;
 };
 
-type PaintArea = {
-  width: number;
-  height: number;
-};
+// type PaintArea = {
+//   width: number;
+//   height: number;
+// };
 
 type CircleProps = {
   center: Coordinates;
