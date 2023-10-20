@@ -6,11 +6,6 @@ type Coordinates = {
   y: number;
 };
 
-// type PaintArea = {
-//   width: number;
-//   height: number;
-// };
-
 type CircleProps = {
   center: Coordinates;
   radius?: number;
@@ -26,8 +21,9 @@ function Circle({ center, radius = 50 }: CircleProps) {
         background: "blue",
         borderRadius: "50%",
         transform: "translate(-50%, -50%)",
-        left: center.x + "px",
-        top: center.y + "px",
+        // ugly way to center circle on user click
+        left: center.x + 38 + "px",
+        top: center.y + 60 + "px",
       }}
     ></div>
   );
@@ -37,24 +33,6 @@ function App() {
   const paintAreaRef = useRef<HTMLDivElement | null>(null);
   const [coordinatesList, setCoordinatesList] = useState<Coordinates[]>([]);
   
-  // TODO: might have to do something like this for circle center === user click
-  // const [paintArea, setPaintArea] = useState<PaintArea>({
-  //   width: 0,
-  //   height: 0,
-  // });
-
-  // useEffect(() => {
-  //   if (paintAreaRef.current) {
-  //     const width = paintAreaRef.current.offsetWidth;
-  //     const height = paintAreaRef.current.offsetHeight;
-
-  //     setPaintArea({
-  //       width,
-  //       height,
-  //     });
-  //   }
-  // }, [setPaintArea]);
-
   const clickListener = (event: React.MouseEvent) => {
     const { offsetX, offsetY } = event.nativeEvent;
     setCoordinatesList([...coordinatesList, { x: offsetX, y: offsetY }]);
